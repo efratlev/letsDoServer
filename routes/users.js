@@ -3,6 +3,20 @@ var router = express.Router();
 const Users = require('../models/user');
 const Groups = require('../models/group');
 
+/** update user include add group  */
+router.put('/updateUser', function (req, res, next) {
+    let newDoc = {};
+    newDoc = req.body;
+    Users.update({ _id: req.body._id }, { $set: newDoc }, function (err, updateProfile) {
+        if (err) {
+            console.log(err + ' couldnt delete');
+        }
+        else {
+            res.json(updateProfile);
+            console.log("2");
+        }
+    });
+});
 
 /* create new user*/
 router.post('/createNewUser', function (req, res) {
@@ -57,7 +71,7 @@ router.get('/', function (req, res, next) {
 });
 //pass to group
 /* get  groups for user by user Id */
-router.get('/usersGroups', function (req, res, next) {
+router.get('/usersGroups/:id', function (req, res, next) {
     Users.findById(req.query.id).populate('groups.groupId').exec(function (err, user) {
         if (err) {
             res.status('400');

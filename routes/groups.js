@@ -4,6 +4,25 @@ const Groups = require('../models/group');
 const Users = require('../models/user');
 
 
+
+/* get all groups and tasks for user*/
+router.get('/ff', function (req, res) {
+    Users.find({ _id: req.body.id }).populate({ path: 'groups.groupId', populate: { path: 'tasks', populate: 'task' } }).exec(function (err, group) {
+        if (err) {
+            console.error('GET Error: There was a problem retrieving: ' + err);
+            res.status(err.statusCode || 500).json(err);
+        }
+        else {
+            res.json(group);
+        }
+    });
+});
+
+
+
+
+
+
 /*create new group for the user*/
 router.post('/newGroup', function (req, res) {
     var group = req.body.groupName;
@@ -49,19 +68,32 @@ router.post('/newGroup', function (req, res) {
     });
 });
 
-//get all users in specipic group
+// get all users in specipic group
 router.get('/getUsersInGroup', function (req, res, next) {
-    groupId = req.body._id;
-    Groups.find({ groupId }.populate('userName'), function (err, usersInGroup) {
+    groupId1 = req.body._id;
+    //Users.populate( groupId ,{ "path": "groups.groupId" }, function (err, usersInGroup) {
+    // Groups.find({ groupId }.populate('userName'), function (err, usersInGroup) {
+       
+    Users.find( { groups: { $in: [groupId1] } }).exec( function (err, usersInGroup) {
         if (err) {
             res.status('400');
         }
         else {
             res.json(usersInGroup);
         }
+    });
+});
+/*get group by id*/
+router.get('/r/', function (req, res, next) {
+    Groups.findOne({ _id: req.body.groupId }, function (err, groups) {
+        if (err) {
+            res.status('400');
+        }
+        else {
+            res.json(groups);
+        }
     })
 });
-
 /*get all exist groups*/
 router.get('/', function (req, res, next) {
     Groups.find({}, function (err, groups) {

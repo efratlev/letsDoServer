@@ -4,14 +4,59 @@ const Tasks = require('../models/task');
 const Users = require('../models/user');
 const Groups = require('../models/group');
 
-//password: req.body.password
-// ,authorizationId:'not 1'
+/*  get all tasks for a group*/
+router.get('/getAllGroupsTasks', function (req, res, next) {
+    Groups.findOne({ _id: req.body._id }).populate({path:'tasks',populate:'task'}).exec(function (err, tasksForGroup) {
+        if (err) {
+            res.status('400');
+        }
+        else {
+            res.json(tasksForGroup);
+       
+        }
+    });
+});
 
+/* update task */
+router.put('/updateTask2', function (req, res) {
+    let newDoc = {};
+    if (req.body.taskName) {
+        newDoc.taskName = req.body.taskName;
+    }
+    if (req.body.description) {
+        newDoc.description = req.body.description;
+    }
+    if (req.body.assignedTo) {
+        newDoc.assignedTo = req.body.assignedTo;
+    }
+    if (req.body.priority) {
+        newDoc.priority = req.body.priority;
+    }
+    if (req.body.frequency) {
+        newDoc.frequency = req.body.frequency;
+    }
+    if (req.body.status) {
+        newDoc.status = req.body.status;
+    }
+    if (req.body.comments) {
+        newDoc.comments = req.body.comments;
+    }
+    if (req.body.businessName) {
+        newDoc.businessName = req.body.businessName;
+    }
+    Tasks.update({ _id: req.body._id }, { $set: newDoc }, function (err, task) {
+        if (err) {
+            console.log(err + ' couldnt delete');
+        }
+        else {
+            res.json(task);
+        }
+    });
+});
 
-
-//create a new task
+/* create a new task  to existt group by user */
 router.post('/newTask', function (req, res) {
-    Users.findOne({ userName: req.body.userName }).exec(function (err, user) {
+    Users.findOne({ _id: req.body._id }).exec(function (err, user) {
         if (err) {
             console.error('GET Error: There was a problem retrieving: ' + err);
             res.status(err.statusCode || 500).json(err);
@@ -21,10 +66,8 @@ router.post('/newTask', function (req, res) {
                 Tasks.create({
                     taskName: req.body.taskName,
                     description: req.body.description,
-                    //dateCreated: req.body.dateCreated,
                     dateCreated: Date.now(),
                     assignedTo: req.body.assignedId,
-                    // addedBy: req.body.addedBy,
                     addedBy: req.body._id,
                     priority: req.body.priority,
                     frequency: req.body.frequency,
@@ -35,11 +78,15 @@ router.post('/newTask', function (req, res) {
                     if (err) {
                         console.error('GET Error: There was a problem retrieving: ' + err);
                         res.status(err.statusCode || 500).json(err);
-                        console.log("1");
                     }
                     else {
-                        res.json(newTask);
-                        console.log("2");
+                        Groups.update({ _id: req.body.groupId }, { $push: { tasks: newTask._id } }, function (err, groupWithNewYask) {
+                            // Groups.update({_id: req.body.groupId}, { $push: { tasks: req.body.taskId }}, function(err, groupWithNewYask) {
+                            if (err) {
+                                res.send(err);
+                            }
+                            res.send(groupWithNewYask);
+                        });
                     }
                 })
             }
@@ -88,59 +135,6 @@ router.route('/cancelTask').post(function (req, res) {
         }
     })
 })
-//update task
-router.post('/updateTask', function (req, res, next) {
-    Tasks.findOne({ id: req.body.id }, function (err, task) {
-        if (err) {
-            console.log(err + ' couldnt delete');
-        }
-        else {
-            let newDoc = {};
-            if (req.body.taskName) {
-                newDoc.taskName = req.body.taskName;
-            }
-            if (req.body.description) {
-                newDoc.description = req.body.description;
-            }
-            if (req.body.assignedTo) {
-                newDoc.assignedTo = req.body.assignedTo;
-            }
-            if (req.body.priority) {
-                newDoc.priority = req.body.priority;
-            }
-            if (req.body.frequency) {
-                newDoc.frequency = req.body.frequency;
-            }
-            if (req.body.status) {
-                newDoc.status = req.body.status;
-            }
-            if (req.body.comments) {
-                newDoc.comments = req.body.comments;
-            }
-            if (req.body.businessName) {
-                newDoc.businessName = req.body.businessName;
-            }
-            //newDoc=req.body;
-            if (task) {
-                Tasks.updateOne({ $set: newDoc }, function (err, updateTask) {
-                    if (err) {
-                        console.error('GET Error: There was a problem retrieving: ' + err);
-                        res.status(err.statusCode || 500).json(err);
-                        console.log("1");
-                    }
-                    else {
-                        res.json(updateTask);
-                        console.log("2");
-                    }
-                })
-            }
-            else {
-                console.log("task is not exist 1");
-            }
-            //res.json(task);
-        }
-    });
-});
 
 //view task  for searches
 //use populate 
@@ -172,30 +166,10 @@ router.post('/viewTasks', function (req, res) {
         });
 });
 
-//  get all task for all the user's group
-// try deep populate(with path.....and , ) 
-//can try .populate.populate
 
-router.get('/getGroups', function (req, res, next) {
-    Users.findOne({ _id: req.params.id }).populate('groups').exec(function (err, groups) {
-        if (err) {
-            res.status('400');
-        }
-        else {
-            if (groups) {
-                console.log("the user is exist in one or more groups");
 
-                res.json(groups);
 
-            }
-            else {
-                console.log("the user isn't exist in ay group");
-            }
-        }
-    })
-});
-
-//get all tasks
+/*get all tasks*/
 router.get('/', function (req, res, next) {
     Tasks.find({}, function (err, tasks) {
         if (err) {
@@ -206,14 +180,9 @@ router.get('/', function (req, res, next) {
         }
     })
 });
-
-//get filtered tasks
-router.post('/filter', function (req, res, next) {
-    let conditions={};
-    if (req.body.priority){
-        conditions.priority=priority;
-    }
-    Tasks.find(conditions, function (err, tasks) {
+/*get task by id*/
+router.get('/id', function (req, res, next) {
+    Tasks.find({ _id: req.body._id }, function (err, tasks) {
         if (err) {
             res.status('400');
         }
@@ -222,4 +191,72 @@ router.post('/filter', function (req, res, next) {
         }
     })
 });
+
+/* add task to group */
+router.put('/bsd', function (req, res) {
+    Groups.update({ _id: req.body.groupId }, { $push: { tasks: req.body.taskId } }, function (err, raw) {
+        if (err) {
+            res.send(err);
+        }
+        res.send(raw);
+    });
+});
+
+// //update task
+// router.post('/updateTask', function (req, res, next) {
+//     Tasks.findOne({ id: req.body.id }, function (err, task) {
+//         if (err) {
+//             console.log(err + ' couldnt delete');
+//         }
+//         else {
+//             let newDoc = {};
+//             if (req.body.taskName) {
+//                 newDoc.taskName = req.body.taskName;
+//             }
+//             if (req.body.description) {
+//                 newDoc.description = req.body.description;
+//             }
+//             if (req.body.assignedTo) {
+//                 newDoc.assignedTo = req.body.assignedTo;
+//             }
+//             if (req.body.priority) {
+//                 newDoc.priority = req.body.priority;
+//             }
+//             if (req.body.frequency) {
+//                 newDoc.frequency = req.body.frequency;
+//             }
+//             if (req.body.status) {
+//                 newDoc.status = req.body.status;
+//             }
+//             if (req.body.comments) {
+//                 newDoc.comments = req.body.comments;
+//             }
+//             if (req.body.businessName) {
+//                 newDoc.businessName = req.body.businessName;
+//             }
+//             //newDoc=req.body;
+//             if (task) {
+//                 Tasks.updateOne({ $set: newDoc }, function (err, updateTask) {
+//                     if (err) {
+//                         console.error('GET Error: There was a problem retrieving: ' + err);
+//                         res.status(err.statusCode || 500).json(err);
+//                         console.log("1");
+//                     }
+//                     else {
+//                         res.json(updateTask);
+//                         console.log("2");
+//                     }
+//                 })
+//             }
+//             else {
+//                 console.log("task is not exist 1");
+//             }
+//             //res.json(task);
+//         }
+//     });
+// });
+
+
+//password: req.body.password
+// ,authorizationId:'not 1'
 module.exports = router;
