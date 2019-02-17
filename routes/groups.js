@@ -67,14 +67,12 @@ router.post('/newGroup', function (req, res) {
         }
     });
 });
-
+  //Users.populate( groupId ,{ "path": "groups.groupId" }, function (err, usersInGroup) {
+    // Groups.find({ groupId }.populate('userName'), function (err, usersInGroup) {
 // get all users in specipic group
 router.get('/getUsersInGroup', function (req, res, next) {
-    groupId1 = req.body._id;
-    //Users.populate( groupId ,{ "path": "groups.groupId" }, function (err, usersInGroup) {
-    // Groups.find({ groupId }.populate('userName'), function (err, usersInGroup) {
-       
-    Users.find( { groups: { $in: [groupId1] } }).exec( function (err, usersInGroup) {
+    groupId1 = req.body._id;       
+    Users.find( { 'groups.groupId': { $in: [groupId1] } }).populate({ path: 'groups.groupId', populate: { path: 'tasks', populate: 'task' } }).exec( function (err, usersInGroup) {
         if (err) {
             res.status('400');
         }
