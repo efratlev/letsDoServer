@@ -9,7 +9,7 @@ var newTaskRouter = require('./newTask');
 var viewTaskRouter = require('./viewTasks');
 var newGroupRouter = require('./newGroup');
 var updateProfileRouter = require('./updateProfile');
-
+var sendEmail = require('./sendEmail');
 
 router.use('/users', usersRouter);
 router.use('/groups', groupsRouter);
@@ -20,6 +20,7 @@ router.use('/newTask', newTaskRouter);
 router.use('/viewTasks', viewTaskRouter);
 router.use('/groups', newGroupRouter);
 router.use('/updateProfile', updateProfileRouter);
+router.use('/sendEmail', sendEmail);
 
 
 // delete
