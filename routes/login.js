@@ -4,9 +4,9 @@ var router = express.Router();
 const Users = require('../models/user');
 
 // login user by userName and id
-router.post('/login', function (req, res) {
-    let pass = req.body.password;
-    Users.findOne({ userName: req.body.userName, password: pass }).exec(function (err, user) {
+router.post('/', function (req, res) {
+    let pass = req.query.password;
+    Users.findOne({ userName: req.query.username, password: pass }).exec(function (err, user) {
         if (err) {
             console.error('GET Error: There was ka problem retrieving: ' + err);
             res.status(err.statusCode || 500).json(err);
