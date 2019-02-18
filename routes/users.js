@@ -71,7 +71,7 @@ router.get('/', function (req, res, next) {
 });
 //pass to group
 /* get  groups for user by user Id */
-router.get('/usersGroups/:id', function (req, res, next) {
+router.get('/userGroups', function (req, res, next) {
     Users.findById(req.query.id).populate('groups.groupId').exec(function (err, user) {
         if (err) {
             res.status('400');
