@@ -25,14 +25,14 @@ router.get('/ff', function (req, res) {
 
 /*create new group for the user*/
 router.post('/newGroup', function (req, res) {
-    var group = req.body.groupName;
+    var newGroup = req.body.group;
     // var groups = {
     //     //"tasks": [],
     //    // "_id": "5c520ad3fa0cb5617089b53d",
     //     "groupName": req.body.groupName
     //     //"__v": 0
     // };
-    Users.findOne({ _id: req.body._id }).exec(function (err, user) {
+    Users.findOne({ _id: req.body.userId }).exec(function (err, user) {
         if (err) {
             console.error('GET Error: There was a problem retrieving: ' + err);
             res.status(err.statusCode || 500).json(err);
@@ -42,7 +42,7 @@ router.post('/newGroup', function (req, res) {
                 console.log("you must be a user before creating group");
             }
             else {
-                Groups.create({ groupName: group }, function (err, newGroup) {
+                Groups.create(newGroup, function (err, newGroup) {
                     if (err) {
                         console.error('GET Error: There was a problem retrieving: ' + err);
                         res.status(err.statusCode || 500).json(err);
