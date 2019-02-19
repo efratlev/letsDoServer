@@ -56,7 +56,7 @@ router.put('/updateTask2', function (req, res) {
 
 /* create a new task  to existt group by user */
 router.post('/newTask', function (req, res) {
-    Users.findOne({ _id: req.body._id }).exec(function (err, user) {
+    Users.findOne({ _id: req.body.userId }).exec(function (err, user) {
         if (err) {
             console.error('GET Error: There was a problem retrieving: ' + err);
             res.status(err.statusCode || 500).json(err);
@@ -68,7 +68,7 @@ router.post('/newTask', function (req, res) {
                     description: req.body.description,
                     dateCreated: Date.now(),
                     assignedTo: req.body.assignedId,
-                    addedBy: req.body._id,
+                    addedBy: req.body.userId,
                     priority: req.body.priority,
                     frequency: req.body.frequency,
                     status: req.body.status,
