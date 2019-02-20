@@ -70,7 +70,7 @@ router.post('/newGroup', function (req, res) {
   //Users.populate( groupId ,{ "path": "groups.groupId" }, function (err, usersInGroup) {
     // Groups.find({ groupId }.populate('userName'), function (err, usersInGroup) {
 // get all users in specipic group
-router.get('/getUsersInGroup', function (req, res, next) {
+router.post('/getUsersInGroup', function (req, res, next) {
     groupId1 = req.body._id;       
     Users.find( { 'groups.groupId': { $in: [groupId1] } }).populate({ path: 'groups.groupId'}).exec( function (err, usersInGroup) {
         if (err) {
