@@ -15,9 +15,9 @@ const schema = new Schema({
         type: Schema.ObjectId,
         ref: 'user'
     },
-    priority: { type: String },
+    priority: { type: Number },
     frequency: { type: String },
-    status: { type: String },
+    status: { type: Number },
     comments: { type: String },
     businessName: {
         type: Schema.ObjectId,
