@@ -18,7 +18,7 @@ router.post('/getAllGroupsTasks', function (req, res, next) {
 });
 
 /* update task */
-router.put('/updateTask2', function (req, res) {
+router.put('/updateTask', function (req, res) {
     let newDoc = {};
     if (req.body.taskName) {
         newDoc.taskName = req.body.taskName;
