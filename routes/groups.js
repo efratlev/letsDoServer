@@ -72,7 +72,7 @@ router.post('/newGroup', function (req, res) {
 // get all users in specipic group
 router.get('/getUsersInGroup', function (req, res, next) {
     groupId1 = req.body._id;       
-    Users.find( { 'groups._id': { $in: [groupId1] } }).populate({ path: 'groups.groupId', populate: { path: 'tasks', populate: 'task' } }).exec( function (err, usersInGroup) {
+    Users.find( { 'groups.groupId': { $in: [groupId1] } }).populate({ path: 'groups.groupId'}).exec( function (err, usersInGroup) {
         if (err) {
             res.status('400');
         }
