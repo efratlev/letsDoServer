@@ -5,8 +5,8 @@ const Users = require('../models/user');
 const Groups = require('../models/group');
 
 /*  get all tasks for a group*/
-router.get('/getAllGroupsTasks', function (req, res, next) {
-    Groups.findOne({ _id: req.body._id }).populate({path:'tasks',populate:'task'}).exec(function (err, tasksForGroup) {
+router.post('/getAllGroupsTasks', function (req, res, next) {
+    Groups.findOne({ _id: req.body.groupId }).populate({path:'tasks',populate:'task'}).exec(function (err, tasksForGroup) {
         if (err) {
             res.status('400');
         }
