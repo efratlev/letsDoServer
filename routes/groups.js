@@ -5,6 +5,27 @@ const Users = require('../models/user');
 
 
 
+/** the user approve his connect to the group */
+    // {
+    //     "userId": "5c6edadfd365780017fb96ec",
+    //         "groupId":"5c6efa990595a400173ae0bd",
+    //         "auth":"5c6ea9761583090c5c4ba591"
+    // }
+router.put('/approveConnectToGroup', function (req, res) {
+    Users.updateOne({ _id: req.body.userId },
+        {
+            $push: { groups: { groupId: req.body.groupId, authorizationId: req.body.auth } }
+        }, function (err, attached) {
+            if (err) {
+                console.error('GET Error: There was a problem retrieving: ' + err);
+                res.status(err.statusCode || 500).json(err);
+            }
+            else {
+                res.json(attached);
+            }
+        });
+
+
 /* get all groups and tasks for user*/
 router.get('/ff', function (req, res) {
     Users.find({ _id: req.body.id }).populate({ path: 'groups.groupId', populate: { path: 'tasks', populate: 'task' } }).exec(function (err, group) {
