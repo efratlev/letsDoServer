@@ -21,7 +21,7 @@ const schema = new Schema({
         }
     ],
     img: [String],
-    email:[String]
+    email:String
 });
 
 module.exports = mongoose.model('user', schema);
