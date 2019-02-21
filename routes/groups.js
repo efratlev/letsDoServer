@@ -24,7 +24,7 @@ router.put('/approveConnectToGroup', function (req, res) {
                 res.json(attached);
             }
         });
-
+    });
 
 /* get all groups and tasks for user*/
 router.get('/ff', function (req, res) {
