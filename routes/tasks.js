@@ -100,7 +100,7 @@ router.post('/newTask', function (req, res) {
 
 //delete a task by id
 router.delete('/deleteTask', function (req, res, next) {
-    Tasks.deleteOne({ id: req.body.id }, function (err, obj) {
+    Tasks.deleteOne({ _id: req.body._id }, function (err, obj) {
         if (err) {
             console.log(err + ' couldnt delete');
         }
