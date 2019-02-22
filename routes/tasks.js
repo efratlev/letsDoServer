@@ -41,6 +41,9 @@ router.put('/updateTask', function (req, res) {
     if (req.body.comments) {
         newDoc.comments = req.body.comments;
     }
+    if (req.body.targetDate) {
+        newDoc.targetDate = req.body.targetDate;
+    }
     if (req.body.businessName) {
         newDoc.businessName = req.body.businessName;
     }
@@ -73,6 +76,7 @@ router.post('/newTask', function (req, res) {
                     frequency: req.body.frequency,
                     status: req.body.status,
                     comments: req.body.comments,
+                    targetDate: req.body.targetDate,
                     businessName: req.body.businessName
                 }, function (err, newTask) {
                     if (err) {
