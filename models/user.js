@@ -20,8 +20,13 @@ const schema = new Schema({
             }
         }
     ],
-    img: [String],
-    email:String
+    img: { data: Buffer, contentType: String },
+    email:String,
+    invitations: [{
+        type: Schema.ObjectId,
+        ref: 'invitation',
+        default: []
+    }]
 });
 
 module.exports = mongoose.model('user', schema);
