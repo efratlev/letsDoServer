@@ -3,7 +3,10 @@ var router = express.Router();
 const Users = require('../models/user');
 const Groups = require('../models/group');
 
-/** update user include add group  */
+
+
+
+/** update user   */
 router.put('/updateUser', function (req, res, next) {
     let newDoc = {};
     newDoc = req.body;

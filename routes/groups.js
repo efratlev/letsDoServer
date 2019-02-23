@@ -12,6 +12,13 @@ const Users = require('../models/user');
     //         "auth":"5c6ea9761583090c5c4ba591"
     // }
 router.put('/approveConnectToGroup', function (req, res) {
+    let auth;
+    if (req.body.newAuthorization) {
+        auth = req.body.groups.newAuthorization;
+    }
+    else {
+        auth = "5c6ea9761583090c5c4ba592";
+    }
     Users.updateOne({ _id: req.body.userId },
         {
             $push: { groups: { groupId: req.body.groupId, authorizationId: req.body.auth } }
@@ -22,6 +29,7 @@ router.put('/approveConnectToGroup', function (req, res) {
             }
             else {
                 res.json(attached);
+
             }
         });
     });
