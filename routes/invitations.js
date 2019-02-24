@@ -34,13 +34,13 @@ router.post('/deleteInvitation',function(req, res) {
 //manager create invitation for user
 // {
 //     הלל מזמין את שמשון הגיבור
-//     "to": "----email",
+//     "userId: "userId
 //     "auth": "5c6ea9761583090c5c4ba591",
 //     "groupId": "5c6efa990595a400173ae0bd",
-//     "newUser": "5c6efb040595a400173ae0bf",
+//     "email":"email
 // }
 router.post('/invitationByAdmin', function (req, res) {
-    Users.findOne({email: req.body.to, 'groups.authorizationId': "5c6ea9761583090c5c4ba591" }).exec(function (err, admin) {
+    Users.findOne({_id: req.body.userId, 'groups.authorizationId': "5c6ea9761583090c5c4ba591" }).exec(function (err, admin) {
         if (err) {
             console.error('GET Error: There was a problem retrieving: ' + err);
             res.status(err.statusCode || 500).json(err);
@@ -53,7 +53,7 @@ router.post('/invitationByAdmin', function (req, res) {
                         res.status(err.statusCode || 500).json(err);
                     }
                     else {
-                        Users.updateOne({ _id: req.body.newUser }, { $push: { invitations: invitation._id } }, function (err, newUser) {
+                        Users.updateOne({ email: req.body.email }, { $push: { invitations: invitation._id } }, function (err, newUser) {
                             if (err) {
                                 console.error('GET Error: There was a problem retrieving: ' + err);
                                 res.status(err.statusCode || 500).json(err);
