@@ -35,7 +35,7 @@ router.put('/approveConnectToGroup', function (req, res) {
     });
 
 /* get all groups and tasks for user*/
-router.get('/ff', function (req, res) {
+router.post('/myTasks', function (req, res) {
     Users.find({ _id: req.body.id }).populate({ path: 'groups.groupId', populate: { path: 'tasks', populate: 'task' } }).exec(function (err, group) {
         if (err) {
             console.error('GET Error: There was a problem retrieving: ' + err);
