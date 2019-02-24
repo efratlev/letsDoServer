@@ -23,6 +23,7 @@ router.post('/deleteInvitation',function(req, res) {
                 } 
                 else{
                    console.log("deeddeddede");
+                   res.sendStatus(200);
                 }
             })
         }
