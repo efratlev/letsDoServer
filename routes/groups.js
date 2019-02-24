@@ -78,7 +78,7 @@ router.post('/newGroup', function (req, res) {
                     }
                     else {
                         console.log("added group");
-                        user.updateOne({ $push: { groups: { groupId: newGroup } } }, { new: true }, function (err, userAsManager) {
+                        user.updateOne({ $push: { groups: { groupId: newGroup, authorizationId:"5c6ea9761583090c5c4ba591" } } }, { new: true }, function (err, userAsManager) {
                             if (err) {
                                 console.error('GET Error: There was a problem retrieving: ' + err);
                                 res.status(err.statusCode || 500).json(err);
