@@ -20,7 +20,7 @@ const schema = new Schema({
             }
         }
     ],
-    img: { data: Buffer, contentType: String },
+    img: String,
     email:String,
     token:String,
     invitations: [{
