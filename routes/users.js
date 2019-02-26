@@ -61,8 +61,8 @@ router.post('/createNewUser', function (req, res) {
     })
 });
 
-/* delete a user by userName*/
-router.delete('/deleteUser', function (req, res, next) {
+/* delete a user by userName
+router.deleteOne('/deleteUser', function (req, res, next) {
     Users.delete({}, function (err, obj) {
         if (err) {
             console.log(err + ' couldnt delete the user);
@@ -71,7 +71,7 @@ router.delete('/deleteUser', function (req, res, next) {
             res.json(obj);
         }
     });
-});
+});*/
 
 /* GET all users */
 router.get('/', function (req, res, next) {
