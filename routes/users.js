@@ -63,9 +63,9 @@ router.post('/createNewUser', function (req, res) {
 
 /* delete a user by userName*/
 router.delete('/deleteUser', function (req, res, next) {
-    Users.deleteOne({ userName: req.body.userName }, function (err, obj) {
+    Users.delete({}, function (err, obj) {
         if (err) {
-            console.log(err + ' couldnt delete the user : ' + userName);
+            console.log(err + ' couldnt delete the user);
         }
         else {
             res.json(obj);
