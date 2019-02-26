@@ -10,7 +10,7 @@ admin.initializeApp({
     databaseURL: "https://letsdo-5d29d.firebaseio.com"
 });
 
-admin.messaging().sendToDevice(registrationToken, {
+/* admin.messaging().sendToDevice(registrationToken, {
     data: {
       score: '850',
       time: '2:45'
@@ -23,7 +23,6 @@ admin.messaging().sendToDevice(registrationToken, {
   })
   .catch(function(error) {
     console.log('Error sending message:', error);
-  });
-
+  }); */
 const notifications = function () { };
 module.exports = notifications;
