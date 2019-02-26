@@ -4,8 +4,20 @@ const Users = require('../models/user');
 const Groups = require('../models/group');
 
 
-
-
+/** update token*/
+router.put('/updateUserToken', function (req, res, next) {
+    
+    Users.update({ _id: req.body._id }, { token:req.body.token }, function (err, updateToken) {
+        if (err) {
+            console.log(err + ' couldnt delete');
+            res.status(err.statusCode || 500).json(err);
+        }
+        else {
+            res.json(updateToken);
+            console.log("token");
+        }
+    });
+});
 /** update user   */
 router.put('/updateUser', function (req, res, next) {
     let newDoc = {};
