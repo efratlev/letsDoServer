@@ -1,118 +1,92 @@
-﻿var express = require('express');
-var router = express.Router();
-const Users = require('../models/user');
-const Invitations = require('../models/invitation');
+var createError = require('http-errors');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
+
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
+var mongoose = require('mongoose');
+
+const notifications = require('./notifications');
+
+var app = express();
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'jade');
+
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(function (req, res, next) {
+
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  // Request methods you wish to allow
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+
+  // Request headers you wish to allow
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
+  // Pass to next layer of middleware
+  next();
+});
+
+app.use('/', indexRouter);
+//app.use('/users', usersRouter);
+
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+  next(createError(404));
+});
+
+// error handler
+app.use(function (err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+//var uristring ='mongodb://family:mongo.123@firstcluster-shard-00-00-4hqi1.mongodb.net:27017,firstcluster-shard-00-01-4hqi1.mongodb.net:27017,firstcluster-shard-00-02-4hqi1.mongodb.net:27017/test?ssl=true&replicaSet=firstCluster-shard-0&authSource=admin&retryWrites=true';// 'mongodb://efratlvn:mongo.123@cluster0-shard-00-00-ylhvf.azure.mongodb.net:27017,cluster0-shard-00-01-ylhvf.azure.mongodb.net:27017,cluster0-shard-00-02-ylhvf.azure.mongodb.net:27017/test?ssl=true&replicaSet=Cluster0-shard-0&authSource=admin&retryWrites=true';
 
 
-/**delete invitation for user after approved */
-// {
-//     "userId":"5c6efb040595a400173ae0bf",
-//     "invitationId":"5c71abd02378b04bd03b114a"
-// }
-router.post('/deleteInvitation',function(req, res) {
-    Users.update({_id: req.body.userId},{$pull:{invitations:{$in:[req.body.invitationId]}}},function(err, user){
-        if (err) {
-            console.error('GET Error: There was a problem retrieving: ' + err);
-            res.status(err.statusCode || 500).json(err);
-        }
-        else{
-            Invitations.deleteOne({_id:req.body.invitationId},function(err,invite){
-                if (err) {
-                    console.error('GET Error: There was a problem retrieving: ' + err);
-                    res.status(err.statusCode || 500).json(err);
-                } 
-                else{
-                   console.log("deeddeddede");
-                   res.sendStatus(200);
-                }
-            })
-        }
-    })
-})
+//mongoose.connect(uristring);
+// Get Mongoose to use the global promise library
+//mongoose.Promise = global.Promise;
+//Get the default connection
+//var db = mongoose.connection;
 
+/* mongoose.connect(uristring, function (err, res) {
+  if (err) {
+  console.error('ERROR connecting to: ' + uristring + '. !' + err);
+  } else {
+  console.log('Succeeded connected to: ' + uristring);
+  }
+  }) */
 
-//manager create invitation for user
-// {
-//     הלל מזמין את שמשון הגיבור
-//     "userId: "userId
-//     "auth": "5c6ea9761583090c5c4ba591",
-//     "groupId": "5c6efa990595a400173ae0bd",
-//     "email":"email
-// }
-router.post('/invitationByAdmin', function (req, res) {
-    Users.findOne({_id: req.body.userId, 'groups.authorizationId': "5c6ea9761583090c5c4ba591" }).exec(function (err, admin) {
-        if (err) {
-            console.error('GET Error: There was a problem retrieving: ' + err);
-            res.status(err.statusCode || 500).json(err);
-        }
-        else {
-            if (admin) {
-                Invitations.create({ invitedBy: req.body.userId, groupId: req.body.groupId }, function (err, invitation) {
-                    if (err) {
-                        console.error('GET Error: There was a problem retrieving: ' + err);
-                        res.status(err.statusCode || 500).json(err);
-                    }
-                    else {
-                        Users.updateOne({ email: req.body.email }, { $push: { invitations: invitation._id } }, function (err, newUser) {
-                            if (err) {
-                                console.error('GET Error: There was a problem retrieving: ' + err);
-                                res.status(err.statusCode || 500).json(err);
-                            }
-                            else {
-                                res.json(newUser);
-                            }
-                        })
-
-                    }
-                })
-            }
-
-        }
-    });
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://family:staytogether@firstcluster-shard-00-00-4hqi1.mongodb.net:27017,firstcluster-shard-00-01-4hqi1.mongodb.net:27017,firstcluster-shard-00-02-4hqi1.mongodb.net:27017/test?ssl=true&replicaSet=firstCluster-shard-0&authSource=admin&retryWrites=true');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection -----------------error:'));
+db.once('open', function () {
+  console.log('cololololo!!!!!!!!!!!!!');
 });
 
 
+//Bind connection to error event (to get notification of connection errors)
+//db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-/* get user invitations*/
-router.post('/', function (req, res) {
-    Users.findOne({ _id: req.body.userId }).populate({path: 'invitations', populate: [
-    { path: 'invitedBy', populate: 'user',select:
-    {'userName':0,'password':0,'groups':0,'email':0,'invitations':0,'img':0}},
-    { path: 'groupId', populate: 'group',select:
-    'groupName'}] }).exec(function (err, invitations) {
-        if (err) {
-            console.error('GET Error: There was a problem retrieving: ' + err);
-            res.status(err.statusCode || 500).json(err);
-        }
-        else {
-            res.json(invitations);
-        }
-    }
-    );
-});
-/** get all exist invitations */
-router.get('/', function (req, res) {
-    Invitations.find({}).exec(function (err, invitations) {
-        if (err) {
-            console.error('GET Error: There was a problem retrieving: ' + err);
-            res.status(err.statusCode || 500).json(err);
-        }
-        else {
-            res.json(invitations);
-        }
-    });
-});
-router.post('/new', function (req, res) {
-    Invitations.create({ invitedBy: req.body.userId, groupId: req.body.groupId }, function (err, invitation) {
-        if (err) {
-            console.error('GET Error: There was a problem retrieving: ' + err);
-            res.status(err.statusCode || 500).json(err);
-        }
-        else {
-            res.json(invitation);
-        }
-    });
-});
-
-
-module.exports = router;
+module.exports = app;
