@@ -22,6 +22,7 @@ const schema = new Schema({
     ],
     img: { data: Buffer, contentType: String },
     email:String,
+    token:String,
     invitations: [{
         type: Schema.ObjectId,
         ref: 'invitation',
