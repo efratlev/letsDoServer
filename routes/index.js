@@ -6,6 +6,7 @@ var tasksRouter = require('./tasks');
 var loginRouter = require('./login');
 var sendEmail = require('./sendEmail');
 var invitationRouter = require('./invitations');
+const notifications = require('../notifications')
 //var newUserRouter = require('./newUser');
 //var newTaskRouter = require('./newTask');
 //var viewTaskRouter = require('./viewTasks');
@@ -23,6 +24,7 @@ router.use('/invitations', invitationRouter);
 //router.use('/newUser', newUserRouter);
 //router.use('/newTask', newTaskRouter);
 //router.use('/viewTasks', viewTaskRouter);
+router.use('/notifications', notifications);
 
 
 
@@ -30,7 +32,7 @@ router.use('/invitations', invitationRouter);
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    res.json({ project: 'bsd'});
+    res.json({ project: 'bsd' });
 });
 
 router.post('/', function (req, res, next) {
