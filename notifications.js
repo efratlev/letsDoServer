@@ -28,7 +28,7 @@ var message = {
 
 
 
-setInterval(sendNotif, 1000 * 60 * 5);
+setInterval(sendNotif, 1000 * 60 * 3);
 
 function sendNotif(message) {
     console.log('in send notif');
