@@ -32,7 +32,11 @@ var message = {
 
 function sendNotif(message) {
     console.log('in send notif');
-    Tasks.find({ targetDate: { $gt: new Date() } }).populate('assignedTo').exec(function (err, tasks) {
+    var start = new Date();
+    start.setHours(0, 0, 0, 0);
+    var end = new Date();
+    end.setHours(23, 59, 59, 999);
+    Tasks.find({ targetDate: { $gte: start, $lt: end } }).populate('assignedTo').exec(function (err, tasks) {
         if (err) {
             console.log(err + ' couldnt delete');
         }
@@ -44,21 +48,23 @@ function sendNotif(message) {
                     array.push(tasks[i]._doc.assignedTo._doc.token);
                 }
             }
-            admin.messaging().sendToDevice(array, {
-                "notification": {
-                    "title": "Let's do",
-                    "body": message || "Click to explore your messages",
-                    "icon": "https://raw.githubusercontent.com/efratlev/letsDoClient/master/public/favicon.ico",
-                    "click_action": "http://localhost:3000/MyTasks"
-                }
-            }).then(function (response) {
-                // See the MessagingDevicesResponse reference documentation for
-                // the contents of response.
-                console.log('Successfully sent message:', response);
-            })
-                .catch(function (error) {
-                    console.log('Error sending message:', error);
-                });
+            if (array.length) {
+                admin.messaging().sendToDevice(array, {
+                    "notification": {
+                        "title": "Let's do",
+                        "body": message || "Click to explore your messages",
+                        "icon": "https://raw.githubusercontent.com/efratlev/letsDoClient/master/public/favicon.ico",
+                        "click_action": "http://localhost:3000/MyTasks"
+                    }
+                }).then(function (response) {
+                    // See the MessagingDevicesResponse reference documentation for
+                    // the contents of response.
+                    console.log('Successfully sent message:', response);
+                })
+                    .catch(function (error) {
+                        console.log('Error sending message:', error);
+                    });
+            }
         }
     });
 }
