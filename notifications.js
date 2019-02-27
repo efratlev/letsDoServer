@@ -28,7 +28,7 @@ var message = {
 
 
 
-//setInterval(sendNotif, 1000 * 60 * 5);
+setInterval(sendNotif, 1000 * 60 * 5);
 
 function sendNotif(message) {
     console.log('in send notif');
@@ -54,7 +54,7 @@ function sendNotif(message) {
                         "title": "Let's do",
                         "body": message || "Click to explore your messages",
                         "icon": "https://raw.githubusercontent.com/efratlev/letsDoClient/master/public/favicon.ico",
-                        "click_action": "http://localhost:3000/MyTasks"
+                        "click_action": "http://localhost:3001/MyTasks"
                     }
                 }).then(function (response) {
                     // See the MessagingDevicesResponse reference documentation for
